@@ -1,0 +1,71 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.14.2
+Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Cortex-M3, rock, LIC=0VRAR-K25WQ-SEFH0-BTX23-76GJW-TGQ28
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Professional  Version: 5.14.0.0
+Toolchain Path:  X:\MDK5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.05 update 1 (build 106)
+Assembler:       Armasm.exe V5.05 update 1 (build 106)
+Linker/Locator:  ArmLink.exe V5.05 update 1 (build 106)
+Library Manager: ArmAr.exe V5.05 update 1 (build 106)
+Hex Converter:   FromElf.exe V5.05 update 1 (build 106)
+CPU DLL:         SARMCM3.DLL V5.14.0.0
+Dialog DLL:      DARMSTM.DLL V1.65.0.0
+Target DLL:      Segger\JL2CM3.dll V2.99.13.0
+Dialog DLL:      TARMSTM.DLL V1.64.0.0
+ 
+<h2>Project:</h2>
+X:\STM32\485\USER\RS485.uvprojx
+Project File Date:  05/04/2022
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.05 update 1 (build 106)', folder: 'X:\MDK5\ARM\ARMCC\Bin'
+Rebuild target 'RS485'
+compiling main.c...
+..\HARDWARE\RS485\rs485.h(32): warning:  #1295-D: Deprecated declaration RS485_Send_EQuiry - give arg types
+  void RS485_Send_EQuiry();
+main.c(21): warning:  #1295-D: Deprecated declaration receiveDaat - give arg types
+                                        void receiveDaat();
+main.c: 2 warnings, 0 errors
+compiling stm32f10x_it.c...
+compiling system_stm32f10x.c...
+compiling led.c...
+compiling key.c...
+compiling lcd.c...
+compiling rs485.c...
+..\HARDWARE\RS485\rs485.h(32): warning:  #1295-D: Deprecated declaration RS485_Send_EQuiry - give arg types
+  void RS485_Send_EQuiry();
+..\HARDWARE\RS485\rs485.c: 1 warning, 0 errors
+compiling delay.c...
+compiling sys.c...
+compiling usart.c...
+compiling print.c...
+print.c(17): warning:  #1-D: last line of file ends without a newline
+  //}
+print.c: 1 warning, 0 errors
+compiling core_cm3.c...
+assembling startup_stm32f10x_hd.s...
+compiling misc.c...
+compiling stm32f10x_fsmc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling stm32f10x_usart.c...
+linking...
+Program Size: Code=22022 RO-data=6418 RW-data=60 ZI-data=1308  
+FromELF: creating hex file...
+"..\OBJ\RS485.axf" - 0 Error(s), 4 Warning(s).
+
+<h2>Collection of Component include folders:</h2>
+  X:\STM32\485\USER\RTE
+  X:\MDK5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.5\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+</pre>
+</body>
+</html>

@@ -1,0 +1,25 @@
+
+server:
+  port: 8233
+
+spring:
+  application:
+    name: buy-product
+  datasource:
+    url: jdbc:mysql://JDBC.GMsure.plus/TestServer?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: 54root233
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#数据库连接池的配置
+druid:
+  url: jdbc:mysql://JDBC.GMsure.plus/TestServer?useUnicode=true&characterEncoding=UTF-8
+  username: root
+  password: 54root233
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  maxActive: 20
+
+# 输出sql语句
+logging:
+  level:
+    com.egobuy.product.mapper: debug
