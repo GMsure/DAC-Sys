@@ -14,8 +14,8 @@ String url = "";  // 请求的页面地址(后面代码中进行拼接)
 
 
 void connectWifi();
-void postDataToOnenet(String data, size_t len);
-float getDataToOnenet();
+void postDataToServer(String data, size_t len);
+float getDataToServer();
 void setup() {
   Serial.begin(115200);
   connectWifi();
@@ -41,12 +41,12 @@ void loop() {
     }
   if(data != ""){
     len = data.length();
-    postDataToOnenet(data,len);
+    postDataToServer(data,len);
     data="";
     delay(899);
   }
   
-//  getDataToOnenet();
+//  getDataToServer();
   
 }
 
@@ -72,9 +72,9 @@ void connectWifi(){
 }
 
 /**
- * 上传数据到onenet
+ * Post方法
  */
-void postDataToOnenet(String data, size_t len){
+void postDataToServer(String data, size_t len){
   // Use WiFiClientSecure class to create TLS connection
   WiFiClient client;          // HTTP
 //  WiFiClientSecure client;    // HTTPS
@@ -115,7 +115,7 @@ void postDataToOnenet(String data, size_t len){
 
 }
 
-float getDataToOnenet(){
+float getDataToServer(){
   // Use WiFiClientSecure class to create TLS connection
   WiFiClient client;          // HTTP
 //  WiFiClientSecure client;    // HTTPS

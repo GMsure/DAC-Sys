@@ -8,6 +8,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import plus.gmsure.server.config.DruidConfig;
@@ -15,6 +16,7 @@ import plus.gmsure.server.config.DruidConfig;
 @SpringBootApplication
 @EnableTransactionManagement
 @MapperScan("plus.gmsure.server.mapper")
+//@ComponentScan("plus.gmsure.server.config")
 @Import(DruidConfig.class)
 public class DataServerApplication {
 
