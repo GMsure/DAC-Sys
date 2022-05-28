@@ -22,10 +22,16 @@
 					
  int main(void)
  {	 
-	u8 key;
-	u8 i=0,t=0;
-	u8 cnt=0;
-	u8 rs485buf[8] = { 0x01,0x03,0x00,0x00,0x00,0x02,0xC4,0x0B }; 
+	u8 key = 66,key1 = 66, key2 = 66, key3 = 66;
+	u8 i = 0,t = 0;
+	u8 cnt = 0;
+	u8 cir = 0; 
+	u8 rs485buf[8]    = { 0x01,0x03,0x00,0x00,0x00,0x02,0xC4,0x0B }; //温湿度查询帧 01 03 00 00 00 02 c4 0b
+	u8 rs485bufNH3[8] = { 0x02,0x03,0x00,0x01,0x00,0x01,0xD5,0xF9 }; //氨气查询帧 02 03 00 01 00 01 d5 f9
+	u8 rs485bufCO2[8] = { 0x03,0x03,0x00,0x02,0x00,0x01,0x24,0x28 };//二氧化碳查询帧 03 03 00 02 00 01 24 28
+	//01 06 07 d1 00 02 59 46 修改波特率
+	//01 06 07 d0 00 02 08 86 修改地址
+	//01 06 07 d0 00 03 c9 46
 	u16 flag = 0;	
 	// TI = 1; 
 	delay_init();	    	 //延时函数初始化	  
@@ -51,36 +57,81 @@
 	
 	while(1)
 	{
+		
+		  //delay_ms(3000);
 		key=KEY_Scan(0);
-		if(key==KEY0_PRES)//KEY0按下,发送一次数据
-		{
+		if(1!=0){//if(key!=KEY0_PRES
+		//delay_ms(3000);
+			for(i=0;i<9;i++)
+			{
+				rs485buf[i]=cnt+i;//填充发送缓冲区
+				//LCD_ShowxNum(30+i*32,190,rs485buf[i],3,16,0X80);	//显示数据
+ 			}
+				//RS485_Send_Data(rs485buf,8);//发送5个字节 		
+			RS485_Send_EQuiry(cir++);		
 			
-//			for(i=0;i<9;i++)
-//			{
-//				rs485buf[i]=cnt+i;//填充发送缓冲区
-//				LCD_ShowxNum(30+i*32,190,rs485buf[i],3,16,0X80);	//显示数据
-// 			}
-			//RS485_Send_Data(rs485buf,8);//发送5个字节 		
-			RS485_Send_EQuiry();		
-			//printf("2233-\n");			
-		}		 
+			//printf("2233=\n");			
+			delay_ms(539);
+		}	
+		//
+		//RS485_Send_EQuiry(cir);		
+//		printf("2233= %d \n", cir);
+//		
+//		if(cir == 1){
+//			printf("1111 \n");
+//			RS485_Receive_Data(rs485buf,&key1);
+//			
+//			printf("k1= %d \n", key1);
+//		}else if(cir == 2){
+//			RS485_Receive_Data(rs485bufNH3,&key2);
+//			printf("k2= %d \n", key2);
+//		}else if(cir == 3){
+//			RS485_Receive_Data(rs485bufCO2,&key3);
+//			printf("k3= %d \n", key3);
+//		}
+//		
+//		printf("2222 \n");
 		RS485_Receive_Data(rs485buf,&key);
 
-		if(key)//接收到有数据
+		
+		
+		
+if(key)//接收到有数据
+		//if(key1 && key2 && key3 && cir == 3)//接收到有数据
 		{
-			if(key>12)key=11;//最大是5个数据.
+			if(key>12) key = 11;//最大是5个数据.
+			if(key1>12) key1 = 11;//最大是5个数据.
+			if(key2>12) key2 = 11;//最大是5个数据.
+			if(key3>12) key3 = 11;//最大是5个数据.
 			//printf("233-");
- 			for(i=0;i<key;i++){
-				
+			for(i=0;i<key;i++){
 				printf("%02x ",rs485buf[i]);
-				if(!flag) flag = 1;
-
+				if(!flag) flag = 1;			
 			}
+// 			for(i=0;i<key1;i++){
+//				printf("%02x ",rs485buf[i]);
+//				if(!flag) flag = 1;			
+//			}
+//			printf("+ ");
+//			for(i=0;i<key2;i++){
+//				printf("%02x ",rs485bufNH3[i]);
+//				if(!flag) flag = 1;			
+//			}
+//			printf("+ ");
+//			for(i=0;i<key3;i++){
+//				printf("%02x ",rs485bufCO2[i]);
+//				if(!flag) flag = 1;			
+//			}
+		if(cir != 3){
+			printf("+ ");
+		}else{
 			printf("-");
+		}
  		}
+		cir %= 3;// 0 1 2
 		//receiveDaat();
 		t++; 
-		delay_ms(10);
+		delay_ms(21);
 		if(t==20)
 		{
 			LED0=!LED0;//提示系统正在运行	
@@ -90,10 +141,8 @@
 				LED1=!LED1;
 
 		}		
-
 			
- 	}
-		
+ 	}		
 		 
 }
 

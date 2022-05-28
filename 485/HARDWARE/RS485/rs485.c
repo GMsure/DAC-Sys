@@ -129,6 +129,7 @@ void RS485_Receive_Data(u8 *buf,u8 *len)
 			buf[i]=RS485_RX_BUF[i];	
 		}		
 		*len=RS485_RX_CNT;	//记录本次数据长度
+		//printf("RX = %d",RS485_RX_CNT);
 		RS485_RX_CNT=0;		//清零
 	}
 }
@@ -137,14 +138,32 @@ void RS485_Receive_Data(u8 *buf,u8 *len)
 //RS485发送len个字节.
 //buf:发送区首地址
 //len:发送的字节数(为了和本代码的接收匹配,这里建议不要超过64个字节)
-void RS485_Send_EQuiry(){
-	u8 Qrbuf[8] = { 0x01,0x03,0x00,0x00,0x00,0x02,0xC4,0x0B }; 
+void RS485_Send_EQuiry(u8 mod){
+	//u8 Qrbuf[8] = { 0x01,0x03,0x00,0x00,0x00,0x02,0xC4,0x0B };  //废弃
+	u8 Qr485bufTM[8]  = { 0x01,0x03,0x00,0x00,0x00,0x02,0xC4,0x0B }; //温湿度查询帧 01 03 00 00 00 02 c4 0b
+	u8 Qr485bufNH3[8] = { 0x02,0x03,0x00,0x01,0x00,0x01,0xD5,0xF9 }; //氨气查询帧 02 03 00 01 00 01 d5 f9
+	u8 Qr485bufCO2[8] = { 0x03,0x03,0x00,0x02,0x00,0x01,0x24,0x28 }; //二氧化碳查询帧 03 03 00 02 00 01 24 28
 	u8 t;
 	RS485_TX_EN=1;			//设置为发送模式
   for(t=0;t<8;t++)		//循环发送数据
 	{		   
-		while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);	  
-		USART_SendData(USART2,Qrbuf[t]);
+//		while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);	  
+//		USART_SendData(USART2,Qrbuf[t]);
+		
+		if(mod == 0){
+			while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);	  
+			USART_SendData(USART2,Qr485bufTM[t]);
+		}else if(mod == 1){
+			while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);	  
+			USART_SendData(USART2,Qr485bufNH3[t]);
+		}else if(mod == 2){
+			while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);	  
+			USART_SendData(USART2,Qr485bufCO2[t]);
+		}
+		//else{
+			
+		//}
+		
 	}	 
  
 	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);		
