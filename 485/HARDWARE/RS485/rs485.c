@@ -134,10 +134,7 @@ void RS485_Send_EQuiry(u8 mod){
 	u8 t;
 	RS485_TX_EN=1;			//设置为发送模式
   for(t=0;t<8;t++)		//循环发送数据
-	{		   
-//		while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);	  
-//		USART_SendData(USART2,Qrbuf[t]);
-		
+	{		   		
 		if(mod == 0){
 			while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);	  
 			USART_SendData(USART2,Qr485bufTM[t]);
@@ -147,11 +144,7 @@ void RS485_Send_EQuiry(u8 mod){
 		}else if(mod == 2){
 			while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);	  
 			USART_SendData(USART2,Qr485bufCO2[t]);
-		}
-		//else{
-			
-		//}
-		
+		}		
 	}	 
  
 	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);		

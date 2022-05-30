@@ -4,7 +4,6 @@
 "..\obj\system_stm32f10x.o"
 "..\obj\led.o"
 "..\obj\key.o"
-"..\obj\lcd.o"
 "..\obj\rs485.o"
 "..\obj\delay.o"
 "..\obj\sys.o"
