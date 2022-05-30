@@ -1,3 +1,6 @@
+/**
+ * POST
+*/
 
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
@@ -18,11 +21,11 @@ void setup() {
   connectWifi();
   while (!Serial)
    {
-    ; 
+    ; // wait for serial port to connect. Needed for native USB port only
   }
 
   while(Serial.read()>=0){}   //清空串口缓存
-  Serial.println("Goodnight moon!"); 
+  Serial.println("Goodnight moon!"); // set the data rate for the SoftwareSerial port
     Serial1.begin(115200);
     Serial1.println("AT");
 }
@@ -42,6 +45,9 @@ void loop() {
     data="";
     delay(899);
   }
+  
+//  getDataToServer();
+  
 }
 
 /**
@@ -50,7 +56,7 @@ void loop() {
 void connectWifi(){
   Serial.println();
   Serial.print("connecting to ");
-  Serial.println(ssid); 
+  Serial.println(ssid);
   
   WiFi.mode(WIFI_STA);    // 设置wifi模式
   WiFi.begin(ssid, password);   // 连接wifi
@@ -69,6 +75,7 @@ void connectWifi(){
  * Post方法
  */
 void postDataToServer(String data, size_t len){
+  // Use WiFiClientSecure class to create TLS connection
   WiFiClient client;          // HTTP
 //  WiFiClientSecure client;    // HTTPS
   Serial.print("connecting to ");
@@ -80,19 +87,26 @@ void postDataToServer(String data, size_t len){
 
   Serial.print("requesting URL: ");
   // 组拼url地址
-  url = "/data/test/hello";
+  url = "/data/test/hello";//?id=3&val=OKk
   Serial.println(url);
 
   // 发送POST请求
+  
+  
   // 组拼HTTPS请求的Header
   String jsonStr = String("") + "id="+ len +"&val=" + String(data) ;
   String getStr = String("POST ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
+               //"User-Agent: test\r\n" +
                "Accept: */*\r\n" +
+               //"Accept-Encoding: gzip, deflate, br\r\n" +
+               //"Connection: keep-alive\r\n" +
                "Content-Type: application/x-www-form-urlencoded\r\n" + 
+               //; boundary=<calculated when request is sent>
                "Content-Length: " + jsonStr.length() + "\r\n\r\n" +
                jsonStr;
   client.print(getStr);   // 发送Headers头
+//  client.print(jsonStr);  // 发送json数据
   Serial.println("send was:");
   Serial.println(getStr + jsonStr);
   String line = client.readStringUntil('\n');
@@ -102,7 +116,9 @@ void postDataToServer(String data, size_t len){
 }
 
 float getDataToServer(){
+  // Use WiFiClientSecure class to create TLS connection
   WiFiClient client;          // HTTP
+//  WiFiClientSecure client;    // HTTPS
   Serial.print("connecting to ");
   Serial.println(host);
   if (!client.connect(host, httpsPort)) {   // 判断连接情况

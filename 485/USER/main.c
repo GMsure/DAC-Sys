@@ -8,17 +8,8 @@
 #include "stdio.h"
 //#include "print.h"
 
- 
-/************************************************
- ALIENTEK精英STM32开发板实验24
- 485 实验 
- 技术支持：www.openedv.com
- 淘宝店铺：http://eboard.taobao.com 
- 关注微信公众平台微信号："正点原子"，免费获取STM32资料。
- 广州市星翼电子科技有限公司  
- 作者：正点原子 @ALIENTEK
-************************************************/
- 				 	void receiveDaat();
+
+void receiveDaat();
 					
  int main(void)
  {	 
@@ -33,71 +24,32 @@
 	//01 06 07 d0 00 02 08 86 修改地址
 	//01 06 07 d0 00 03 c9 46
 	u16 flag = 0;	
-	// TI = 1; 
 	delay_init();	    	 //延时函数初始化	  
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
 	uart_init(115200);	 	//串口初始化为115200
+	RS485_Init(9600);	//初始化RS485为9600
 	LED_Init();		  		//初始化与LED连接的硬件接口
 	LCD_Init();			   	//初始化LCD 	
 	KEY_Init();				//按键初始化		 
 	
-	RS485_Init(9600);	//初始化RS485
-// 	POINT_COLOR=RED;//设置字体为红色 
-//	LCD_ShowString(30,50,200,16,16,"ELITE STM32");
-//	LCD_ShowString(30,70,200,16,16,"RS485 TEST");	
-//	LCD_ShowString(30,90,200,16,16,"ATOM@ALIENTEK");
-//	LCD_ShowString(30,110,200,16,16,"2015/1/15");	
-//	LCD_ShowString(30,130,200,16,16,"KEY0:Send");	//显示提示信息		
-// 
-// 	POINT_COLOR=BLUE;//设置字体为蓝色	  
-//	LCD_ShowString(30,150,200,16,16,"Count:");			//显示当前计数值	
-//	LCD_ShowString(30,170,200,16,16,"Send Data:");		//提示发送的数据	
-//	LCD_ShowString(30,210,200,16,16,"Receive Data:");	//提示接收到的数据		
+
  							
 	
 	while(1)
 	{
-		
-		  //delay_ms(3000);
 		key=KEY_Scan(0);
-		if(1!=0){//if(key!=KEY0_PRES
-		//delay_ms(3000);
+		if(1!=0){//if
 			for(i=0;i<9;i++)
 			{
 				rs485buf[i]=cnt+i;//填充发送缓冲区
-				//LCD_ShowxNum(30+i*32,190,rs485buf[i],3,16,0X80);	//显示数据
- 			}
-				//RS485_Send_Data(rs485buf,8);//发送5个字节 		
-			RS485_Send_EQuiry(cir++);		
-			
-			//printf("2233=\n");			
+ 			}	
+			RS485_Send_EQuiry(cir++);			
 			delay_ms(539);
 		}	
-		//
-		//RS485_Send_EQuiry(cir);		
-//		printf("2233= %d \n", cir);
-//		
-//		if(cir == 1){
-//			printf("1111 \n");
-//			RS485_Receive_Data(rs485buf,&key1);
-//			
-//			printf("k1= %d \n", key1);
-//		}else if(cir == 2){
-//			RS485_Receive_Data(rs485bufNH3,&key2);
-//			printf("k2= %d \n", key2);
-//		}else if(cir == 3){
-//			RS485_Receive_Data(rs485bufCO2,&key3);
-//			printf("k3= %d \n", key3);
-//		}
-//		
-//		printf("2222 \n");
-		RS485_Receive_Data(rs485buf,&key);
 
+		RS485_Receive_Data(rs485buf,&key);		
 		
-		
-		
-if(key)//接收到有数据
-		//if(key1 && key2 && key3 && cir == 3)//接收到有数据
+		if(key)//接收到有数据
 		{
 			if(key>12) key = 11;//最大是5个数据.
 			if(key1>12) key1 = 11;//最大是5个数据.
@@ -108,25 +60,11 @@ if(key)//接收到有数据
 				printf("%02x ",rs485buf[i]);
 				if(!flag) flag = 1;			
 			}
-// 			for(i=0;i<key1;i++){
-//				printf("%02x ",rs485buf[i]);
-//				if(!flag) flag = 1;			
-//			}
-//			printf("+ ");
-//			for(i=0;i<key2;i++){
-//				printf("%02x ",rs485bufNH3[i]);
-//				if(!flag) flag = 1;			
-//			}
-//			printf("+ ");
-//			for(i=0;i<key3;i++){
-//				printf("%02x ",rs485bufCO2[i]);
-//				if(!flag) flag = 1;			
-//			}
-		if(cir != 3){
-			printf("+ ");
-		}else{
-			printf("-");
-		}
+			if(cir != 3){
+				printf("+ ");
+			}else{
+				printf("-");
+			}
  		}
 		cir %= 3;// 0 1 2
 		//receiveDaat();
@@ -139,7 +77,6 @@ if(key)//接收到有数据
 			cnt++;
 			if(flag)
 				LED1=!LED1;
-
 		}		
 			
  	}		

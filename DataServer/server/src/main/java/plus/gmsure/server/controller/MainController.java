@@ -28,13 +28,24 @@ public class MainController {
     @Autowired
     private plus.gmsure.server.service.impl.WebSocketServer WebSocketServer;
 
-    private int criT = 0;
-    private Integer [] tmpTmper = new Integer[7];
-    private int criM = 0;
-    private Integer [] tmpMoiser = new Integer[7];//之后可以用自定义队列一减一加做滚动摘取
-    private int criC = 0;
-    private int lastCO2 = 423;
-    private Integer [] tmpCO2cct = new Integer[7];
+    //再加一个正常接收和异常接收的计数
+
+    private static int criT = 0;
+    private static Integer [] tmpTmper = new Integer[7];
+    private static int criM = 0;
+    private static Integer [] tmpMoiser = new Integer[7];//之后可以用自定义队列一减一加做滚动摘取
+    private static int criC = 0;
+    private static int lastCO2 = 423;
+    private static Integer [] tmpCO2cct = new Integer[7];
+
+    public MainController(){
+        for (int i = 0; i < 7; i++) {
+            tmpTmper[i] = 0;
+            tmpMoiser[i] = 0;
+            tmpCO2cct[i] = 0;
+        }
+    }
+
     /**
      * 数据库查询测试
      * @return
@@ -132,25 +143,29 @@ public class MainController {
             criM %= 7;
         }
         Integer Tmp = Integer.parseInt(Temperature,16);
-        if (Tmp > 1000){
-            Tmp = avgArr(tmpTmper);
-        }else {
-            tmpTmper[criT++] = Tmp;
-            criT %= 7;
-        }
         if(vals[5].equals("ff")) {
             Integer FFFF = Integer.parseInt("FFFF",16);
             Tmp = FFFF - Tmp + 1;
             SignBit = "-";
         }
+        if (Tmp > 1000 || Tmp < -500){//一般会出现3000-5000的跳变 偶尔会出现-65000这样的跳变
+            Tmp = avgArr(tmpTmper);
+        }else {
+            tmpTmper[criT++] = Tmp;
+            criT %= 7;
+        }
         Integer NH3cct = Integer.parseInt(NH3,16);
+        NH3cct =  0;//氨气不测了
         Integer CO2cct = Integer.parseInt(CO2,16);
         if (CO2cct >= 2 * lastCO2 + 1 && CO2cct <= 3 * lastCO2){
             CO2cct =  ((CO2cct / 2) + avgArr(tmpCO2cct)) / 2; //二氧化碳跳变一般为二倍
-        }else if (CO2cct > 3 * lastCO2){
+        }else if (CO2cct > 1.57 * lastCO2 && CO2cct <= 2* lastCO2){
+            CO2cct = ( (int)(CO2cct / 1.67) + avgArr(tmpCO2cct) * 2) / 3; //跳变一点五五倍时 按照均值权大 做3份均值
+        } else if (CO2cct > 3 * lastCO2){
             CO2cct = avgArr(tmpCO2cct);
         } else {
             tmpCO2cct[criC++] = CO2cct;
+            lastCO2 = CO2cct;
             criC %= 7;
         }
 
@@ -161,13 +176,14 @@ public class MainController {
 
     private Integer avgArr(Integer[] arr){
         int sum = 0, cnt = 0;
-        for (Integer integer : arr) {
-            if (integer != 0) {
-                sum += integer;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != 0 && arr[i] != null) {
+                sum += arr[i];
                 cnt++;
             }
         }
-        return sum / cnt;
+
+        return cnt == 0 ? 0 : sum / cnt;
     }
 
 }
